@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using RuleEngine;
 
 Func<string, Result> mustBe3Words = (text) =>
 {
@@ -21,7 +21,7 @@ Func<string, Result> MaxLength10 = (text) =>
 
 Func<string, Result> mustHaveNoCaps = (text) =>
 {
-    if (text.All(x => char.IsLower(x)))
+    if (text.Where(x => char.IsLetter(x)).All(x => char.IsLower(x)))
         return new Pass();
     else
         return new Fail("Must have no caps");
@@ -34,22 +34,6 @@ var rules = new List<Func<string, Result>>()
     mustHaveNoCaps
 };
 
-Func<string, Result> BuildValidator(IEnumerable<Func<string, Result>> rules)
-{
-    return rules.Aggregate((previusRules, nextRule) =>
-    {
-        return (text) =>
-        {
-            var result = previusRules(text);
-            return result switch
-            {
-                Pass => nextRule(text),
-                Fail errorMessage => result
-            };
-        };
-    });
-}
+var validate = Validator.BuildValidator(rules);
 
-var validate = BuildValidator(rules);
-
-Console.WriteLine(validate("aaaaaaaaaa aaa"));
+Console.WriteLine(validate("aaaaaa aaa aaa"));
