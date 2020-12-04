@@ -13,7 +13,7 @@ Func<string, Result> mustBe3Words = (text) =>
 
 Func<string, Result> MaxLength10 = (text) =>
 {
-    if (text.Split(' ').Length == 3)
+    if (text.Length <= 10)
         return new Pass();
     else
         return new Fail("Length cannot excced 10");
